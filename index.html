@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mairo - Agile PI & Collaborative Planning Board</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- PWA Settings -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1e1e2d">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <!-- Google Fonts for premium typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="light-theme">
+    <div id="app">
+        <!-- Floating Header/Toolbar -->
+        <header id="top-bar">
+            <div class="logo">
+                <span class="logo-icon">▲</span>
+                <h1>Mairo</h1>
+                <span class="badge">PI Planning</span>
+            </div>
+
+            <!-- Drawing and Manipulation Tools -->
+            <div class="tool-group" id="tools">
+                <button class="tool-btn active" id="tool-select" data-tool="select" title="Selection Mode (V)">
+                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z"/><path d="M13 13l6 6"/></svg>
+                    <span>Select</span>
+                </button>
+                <button class="tool-btn" id="tool-sticky" data-tool="sticky" title="Add Sticky Note (S)">
+                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    <span>Sticky</span>
+                </button>
+                <button class="tool-btn" id="tool-card" data-tool="card" title="Add Task/Feature Card (C)">
+                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="11" y2="17"/></svg>
+                    <span>Task Card</span>
+                </button>
+                <button class="tool-btn" id="tool-box" data-tool="box" title="Add Box / Group (B)">
+                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/></svg>
+                    <span>Box</span>
+                </button>
+                <button class="tool-btn" id="tool-line" data-tool="line" title="Draw Straight Line (I)">
+                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="19" x2="19" y2="5"/></svg>
+                    <span>Line</span>
+                </button>
+                <button class="tool-btn" id="tool-draw" data-tool="draw" title="Draw Brush (D)">
+                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                    <span>Draw</span>
+                </button>
+                <button class="tool-btn" id="tool-text" data-tool="text" title="Add Text Label (T)">
+                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
+                    <span>Text</span>
+                </button>
+                <button class="tool-btn" id="tool-eraser" data-tool="eraser" title="Eraser (E)">
+                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20H7L3 16c-1.5-1.5-1.5-3.5 0-5l8.5-8.5c1.5-1.5 3.5-1.5 5 0l4 4c1.5 1.5 1.5 3.5 0 5L12 20"/><line x1="6" y1="11" x2="13" y2="18"/></svg>
+                    <span>Eraser</span>
+                </button>
+            </div>
+
+            <!-- Quick Board Actions -->
+            <div class="action-group">
+                <button class="action-btn" id="btn-undo" title="Undo (Ctrl+Z)">
+                    <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/></svg>
+                </button>
+                <button class="action-btn" id="btn-redo" title="Redo (Ctrl+Y)">
+                    <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21 7v6h-6"/><path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3l3 2.7"/></svg>
+                </button>
+                <div class="divider"></div>
+                <button class="action-btn" id="btn-templates" title="Select Board Template">
+                    <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+                    <span>Templates</span>
+                </button>
+                <div class="divider"></div>
+                <button class="action-btn" id="btn-theme-toggle" title="Toggle Light/Dark Theme">
+                    <svg class="sun" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                </button>
+                <button class="action-btn primary" id="btn-export-menu" title="Export / Save Options">
+                    <span>Export</span>
+                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <!-- Export Dropdown -->
+                <div class="dropdown-menu" id="export-dropdown">
+                    <button id="btn-export-json">Export to File (JSON)</button>
+                    <button id="btn-import-json-trigger">Import File (JSON)</button>
+                    <input type="file" id="btn-import-json" accept=".json" style="display: none;">
+                    <button id="btn-export-png">Download Image (PNG)</button>
+                    <button id="btn-clear-board" class="danger">Clear Workspace</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Workspace -->
+        <main id="workspace-container">
+            <!-- Grid Background Overlay, Panning and Zooming are applied to this child -->
+            <div id="infinite-canvas">
+                <!-- SVG layer for connecting lines, lines are dynamically calculated -->
+                <svg id="svg-layer" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <!-- Arrowhead marker for dependencies -->
+                        <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                            <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"/>
+                        </marker>
+                        <marker id="arrow-critical" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                            <path d="M 0 0 L 10 5 L 0 10 z" fill="#ef4444"/>
+                        </marker>
+                    </defs>
+                </svg>
+
+                <!-- Grid/Template Container -->
+                <div id="template-canvas-container"></div>
+
+                <!-- DOM Container for notes/cards -->
+                <div id="dom-canvas-container"></div>
+            </div>
+        </main>
+
+        <!-- Sidebar Panel for Backlog & Template Setup -->
+        <aside id="sidebar-drawer" class="closed">
+            <button id="sidebar-toggle" title="Toggle Backlog Panel">
+                <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <div class="sidebar-content">
+                <div class="sidebar-tabs">
+                    <button class="tab-btn active" data-tab="tab-backlog">Unplanned Backlog</button>
+                    <button class="tab-btn" data-tab="tab-config">Board Configuration</button>
+                </div>
+
+                <div class="tab-content active" id="tab-backlog">
+                    <div class="backlog-header">
+                        <h3>Backlog Cards</h3>
+                        <button class="btn-small" id="btn-add-backlog">Create Card</button>
+                    </div>
+                    <p class="description">Drag cards from here directly onto the planning grid or free whiteboard canvas.</p>
+                    <div id="backlog-items" class="backlog-list">
+                        <!-- Backlog items will appear here -->
+                        <div class="empty-state">No backlog cards. Click "Create Card" to start building your backlog.</div>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="tab-config">
+                    <h3>Template Options</h3>
+                    <div class="config-section">
+                        <label>Active Template</label>
+                        <select id="config-template-select">
+                            <option value="program-board">Program Board (PI Planning)</option>
+                            <option value="roam-board">ROAM Risk Board</option>
+                            <option value="kanban-board">Kanban Board</option>
+                            <option value="sandbox">Free Sandbox (Grid only)</option>
+                        </select>
+                    </div>
+
+                    <div id="template-customization-options">
+                        <!-- Custom options will be dynamically injected here depending on the selected template -->
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Template Selector Overlay Modal -->
+        <div class="modal-overlay" id="templates-modal">
+            <div class="modal-container text-center">
+                <h2>Choose a Planning Template</h2>
+                <p>Select a structured canvas layout to align your teams and organize your PI.</p>
+                <div class="template-grid">
+                    <div class="template-card" data-template="program-board">
+                        <div class="template-icon">
+                            <svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="2" fill="none"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="16" y1="3" x2="16" y2="21"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/></svg>
+                        </div>
+                        <h3>Program Increment Board</h3>
+                        <p>Coordinate dependencies and deliveries across multiple teams (swimlanes) and sprints (columns).</p>
+                    </div>
+                    <div class="template-card" data-template="roam-board">
+                        <div class="template-icon">
+                            <svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="2" fill="none"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="12" y1="3" x2="12" y2="21"/></svg>
+                        </div>
+                        <h3>ROAM Risk Board</h3>
+                        <p>Categorize program risks into four clear quadrants: Resolved, Owned, Accepted, and Mitigated.</p>
+                    </div>
+                    <div class="template-card" data-template="kanban-board">
+                        <div class="template-icon">
+                            <svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="2" fill="none"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="16" y1="3" x2="16" y2="21"/></svg>
+                        </div>
+                        <h3>Team Kanban Board</h3>
+                        <p>Manage sprint delivery columns for a single team (Backlog, Todo, Doing, Review, Done).</p>
+                    </div>
+                    <div class="template-card active" data-template="sandbox">
+                        <div class="template-icon">
+                            <svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>
+                        </div>
+                        <h3>Free Sandbox</h3>
+                        <p>An infinite dot grid with zero structures. Ideal for custom layouts and free-form brainstorms.</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn secondary" id="btn-close-templates">Cancel</button>
+                    <button class="btn primary" id="btn-apply-template">Load Template</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Task Card Editor Modal -->
+        <div class="modal-overlay" id="edit-modal">
+            <div class="modal-container edit-modal">
+                <div class="modal-header">
+                    <h2>Edit Card Details</h2>
+                    <button class="close-btn" id="btn-close-edit">×</button>
+                </div>
+                <div class="modal-body">
+                    <form id="card-edit-form">
+                        <input type="hidden" id="edit-card-id-raw">
+                        
+                        <div class="form-row split">
+                            <div class="form-group">
+                                <label for="edit-card-key">Card Reference ID</label>
+                                <input type="text" id="edit-card-key" placeholder="e.g. TEAM-101">
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-card-type">Card Category</label>
+                                <select id="edit-card-type">
+                                    <option value="story">User Story (Blue)</option>
+                                    <option value="feature">Feature (Orange)</option>
+                                    <option value="dependency">Dependency Card (Red)</option>
+                                    <option value="risk">Risk (Amber)</option>
+                                    <option value="milestone">Milestone (Gold)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="edit-card-title">Title</label>
+                            <input type="text" id="edit-card-title" required placeholder="Enter brief title...">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="edit-card-desc">Description</label>
+                            <textarea id="edit-card-desc" rows="3" placeholder="Provide extra context, requirements or goals..."></textarea>
+                        </div>
+
+                        <div class="form-row split">
+                            <div class="form-group">
+                                <label for="edit-card-points">Estimate (Points)</label>
+                                <input type="text" id="edit-card-points" placeholder="e.g. 3, 5, SP, T-Shirt">
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-card-owner">Assignee / Owner</label>
+                                <input type="text" id="edit-card-owner" placeholder="e.g. Daniel P.">
+                            </div>
+                        </div>
+
+                        <div class="form-row split">
+                            <div class="form-group">
+                                <label for="edit-card-status">Status</label>
+                                <select id="edit-card-status">
+                                    <option value="backlog">Backlog / Unplanned</option>
+                                    <option value="todo">To Do</option>
+                                    <option value="doing">In Progress</option>
+                                    <option value="blocked">Blocked ⚠️</option>
+                                    <option value="done">Completed ✓</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-card-team">Team Alignment</label>
+                                <input type="text" id="edit-card-team" placeholder="e.g. Team Falcon">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn danger mr-auto" id="btn-delete-card">Delete Card</button>
+                    <button class="btn secondary" id="btn-cancel-edit">Cancel</button>
+                    <button class="btn primary" id="btn-save-card">Save Changes</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Help Tooltips / Shortcuts Panel -->
+        <footer id="status-bar">
+            <div class="status-item">
+                <span class="indicator"></span>
+                <span id="canvas-status">Select Tool Active</span>
+            </div>
+            <div class="status-shortcuts">
+                <span><kbd>Space</kbd> + Drag to Pan</span>
+                <span><kbd>Scroll</kbd> to Zoom</span>
+                <span>Click note/text to edit</span>
+                <span>Click connection line to style/delete</span>
+                <span>Press <kbd>Delete</kbd> to remove selected</span>
+            </div>
+            <div class="zoom-controls">
+                <button id="btn-zoom-out" title="Zoom Out">−</button>
+                <span id="zoom-level">100%</span>
+                <button id="btn-zoom-in" title="Zoom In">+</button>
+                <button id="btn-zoom-reset" title="Fit to View">☉ Fit</button>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Floating Contextual Toolbar -->
+    <div id="context-toolbar" class="hidden">
+        <!-- Font Size Controls -->
+        <div class="context-group" id="context-font-size-group">
+            <button id="btn-font-dec" title="Decrease Text Size">A−</button>
+            <span id="label-font-size">14px</span>
+            <button id="btn-font-inc" title="Increase Text Size">A+</button>
+        </div>
+        <div class="context-divider" id="context-divider-font"></div>
+        <!-- Line Style Controls (only visible when a connection is selected) -->
+        <div class="context-group" id="context-line-style-group">
+            <button id="btn-line-solid" class="line-style-btn" title="Solid Line" style="font-weight:bold;">—</button>
+            <button id="btn-line-dashed" class="line-style-btn" title="Dashed Line" style="letter-spacing:1px;">- -</button>
+            <button id="btn-line-dotted" class="line-style-btn" title="Dotted Line" style="font-weight:bold; letter-spacing:1px;">···</button>
+        </div>
+        <div class="context-divider" id="context-divider-line"></div>
+        <!-- Color Picker Controls -->
+        <div class="context-group" id="context-colors-group">
+            <div class="color-picker-row">
+                <button class="color-picker-dot yellow" data-color="yellow" title="Yellow"></button>
+                <button class="color-picker-dot pink" data-color="pink" title="Pink"></button>
+                <button class="color-picker-dot green" data-color="green" title="Green"></button>
+                <button class="color-picker-dot blue" data-color="blue" title="Blue"></button>
+                <button class="color-picker-dot purple" data-color="purple" title="Purple"></button>
+                <button class="color-picker-dot orange" data-color="orange" title="Orange"></button>
+                <button class="color-picker-dot black" data-color="black" title="Black"></button>
+            </div>
+        </div>
+        <div class="context-divider"></div>
+        <!-- Delete Control -->
+        <button id="btn-context-delete" class="danger-icon" title="Delete Element">
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+        </button>
+    </div>
+
+    <!-- Application Script -->
+    <script src="app.js"></script>
+
+    <!-- PWA Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('Service Worker registered.', reg.scope))
+                    .catch(err => console.log('Service Worker register failed.', err));
+            });
+        }
+    </script>
+</body>
+</html>
