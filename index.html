@@ -56,6 +56,10 @@
                     <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
                     <span>Text</span>
                 </button>
+                <button class="tool-btn" id="tool-table" data-tool="table" title="Add Grid/Table (G)">
+                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18M3 15h18"/></svg>
+                    <span>Table</span>
+                </button>
                 <button class="tool-btn" id="tool-eraser" data-tool="eraser" title="Eraser (E)">
                     <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20H7L3 16c-1.5-1.5-1.5-3.5 0-5l8.5-8.5c1.5-1.5 3.5-1.5 5 0l4 4c1.5 1.5 1.5 3.5 0 5L12 20"/><line x1="6" y1="11" x2="13" y2="18"/></svg>
                     <span>Eraser</span>
@@ -316,6 +320,14 @@
             <button id="btn-line-dotted" class="line-style-btn" title="Dotted Line" style="font-weight:bold; letter-spacing:1px;">···</button>
         </div>
         <div class="context-divider" id="context-divider-line"></div>
+        <!-- Table Controls (only visible when a table is selected) -->
+        <div class="context-group" id="context-table-group" style="display: none;">
+            <button id="btn-table-row-add" title="Add Row" style="width: auto; padding: 0 8px;">+ Row</button>
+            <button id="btn-table-row-del" title="Remove Last Row" style="width: auto; padding: 0 8px;">− Row</button>
+            <button id="btn-table-col-add" title="Add Column" style="width: auto; padding: 0 8px;">+ Col</button>
+            <button id="btn-table-col-del" title="Remove Last Column" style="width: auto; padding: 0 8px;">− Col</button>
+        </div>
+        <div class="context-divider" id="context-divider-table" style="display: none;"></div>
         <!-- Color Picker Controls -->
         <div class="context-group" id="context-colors-group">
             <div class="color-picker-row">
