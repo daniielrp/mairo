@@ -1463,12 +1463,12 @@ kbd {
     width: 100%;
     height: 100%;
     background: var(--bg-secondary);
-    border: 2px dashed var(--border-color);
+    border: 1px solid var(--border-color);
     border-radius: 8px;
-    padding: 10px;
+    padding: 0;
     display: flex;
     flex-direction: column;
-    overflow: auto;
+    overflow: hidden;
     box-sizing: border-box;
     transition: all var(--transition-fast);
 }
@@ -1484,9 +1484,9 @@ kbd {
 }
 .whiteboard-table th, .whiteboard-table td {
     border: 1px solid var(--border-color);
-    padding: 4px 8px;
+    padding: 0;
     text-align: left;
-    height: 32px;
+    position: relative;
 }
 .whiteboard-table th {
     background: rgba(99, 102, 241, 0.06);
@@ -1503,7 +1503,7 @@ kbd {
     font-size: 13px;
     outline: none;
     box-sizing: border-box;
-    padding: 0;
+    padding: 4px 8px;
 }
 .whiteboard-table th input {
     font-weight: 600;
@@ -1516,6 +1516,36 @@ kbd {
 }
 .light-theme .whiteboard-table td input:focus, .light-theme .whiteboard-table th input:focus {
     background: rgba(0, 0, 0, 0.02);
+}
+
+.table-col-resize-handle {
+    position: absolute;
+    top: 0;
+    right: -4px;
+    width: 8px;
+    height: 100%;
+    cursor: col-resize;
+    z-index: 100;
+    background: transparent;
+    transition: background-color var(--transition-fast);
+}
+.table-col-resize-handle:hover {
+    background: rgba(99, 102, 241, 0.4);
+}
+
+.table-row-resize-handle {
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 100%;
+    height: 8px;
+    cursor: row-resize;
+    z-index: 100;
+    background: transparent;
+    transition: background-color var(--transition-fast);
+}
+.table-row-resize-handle:hover {
+    background: rgba(99, 102, 241, 0.4);
 }
 
 /* Resizable styles for shapes and containers */
@@ -1531,6 +1561,22 @@ kbd {
     outline: 2.5px solid #64748b !important;
     box-shadow: 0 8px 24px rgba(0,0,0,0.15) !important;
     z-index: 999;
+}
+
+/* Stacking overrides for container elements to prevent covering cards/stickies when selected/dragged */
+.board-element.type-table,
+.board-element.type-box {
+    z-index: 1;
+}
+
+.board-element.type-table.selected,
+.board-element.type-box.selected {
+    z-index: 5 !important;
+}
+
+.board-element.type-table.dragging,
+.board-element.type-box.dragging {
+    z-index: 6 !important;
 }
 
 /* Straight Lines in background drawings or shapes layer */

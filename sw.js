@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mairo-cache-v1';
+const CACHE_NAME = 'mairo-cache-v2';
 const ASSETS = [
   './',
   './index.html',
